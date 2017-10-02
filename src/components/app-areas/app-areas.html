@@ -1,0 +1,30 @@
+<!-- Generated template for the AppAreasComponent component -->
+<div>
+
+
+
+
+  <div id="wrapper">
+    <div class="image-decorator">
+      <img alt="Image principale" #imageElement src="./assets/7337760.png" (load)="onImageLoaded($event)"/>
+    </div>
+    <table>
+      <tr>
+        <td class="actions">
+          <input type="button" (click)="onBtnViewClick()" id="btnView" value="Display sections" class="actionOn" />
+          <input type="button" (click)="onBtnViewRelativeClick()" id="btnViewRel" value="Display relative" class="actionOn" />
+          <!--<input type="button" (click)="onBtnNewClick()" id="btnNew" value="Add New" class="actionOn" />-->
+          <!--<input type="button" (click)="onBtnNewsClick()" id="btnNews" value="Add 2 New" class="actionOn" />-->
+          <!--<input type="button" (click)="onBtnResetClick()" id="btnReset" value="Reset" class="actionOn" />-->
+          <!--<input type="button" (click)="onBtnDestroyClick()" id="btnDestroy" value="Destroy" class="actionOn" />-->
+          <!--<input type="button" (click)="onBtnCreateClick()" id="btnCreate" value="Create" class="actionOff" />-->
+        </td>
+        <td>
+          <div id="output" class='output'> </div>
+        </td>
+      </tr>
+    </table>
+
+  </div>
+
+</div>
