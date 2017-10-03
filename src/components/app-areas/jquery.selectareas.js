@@ -12,17 +12,26 @@
         var options = parent.options,
             $image = parent.$image,
             $trigger = parent.$trigger,
-            $area,
+            $areaElement,
+            // used for background gif animated borders
             $outline,
+            // used to show selected part from the original image
             $selection,
+            // resize points
             $resizeHandlers = {},
+            // delete button,
             $btDelete,
+            // text
+            $textElement,
             resizeHorizontally = true,
             resizeVertically = true,
             selectionOffset = [0, 0],
             selectionOrigin = [0, 0],
             area = {
                 id: id,
+                customId:id,
+                text:"",
+                color:"",
                 x: 0,
                 y: 0,
                 z: 0,
@@ -169,11 +178,24 @@
                     cursor: cursorType
                 });
             },
+            updateAreaText = function () {
+              $textElement.text(area.text);
+              // Update the outline layer
+              $textElement.css({
+                cursor: "pointer",
+                width: area.width,
+                height: area.height,
+                left: area.x,
+                top: area.y,
+                "z-index": area.z + 3
+              });
+            },
             refresh = function(sender) {
                 switch (sender) {
                     case "startSelection":
                         parent._refresh();
                         updateSelection();
+                        updateAreaText();
                         updateResizeHandlers();
                         updateBtDelete(true);
                         break;
@@ -185,6 +207,7 @@
 
                     case "resizeSelection":
                         updateSelection();
+                        updateAreaText();
                         updateResizeHandlers();
                         updateCursor("crosshair");
                         updateBtDelete(true);
@@ -192,6 +215,7 @@
 
                     case "moveSelection":
                         updateSelection();
+                        updateAreaText();
                         updateResizeHandlers();
                         updateCursor("move");
                         updateBtDelete(true);
@@ -199,6 +223,7 @@
 
                     case "blur":
                         updateSelection();
+                        updateAreaText();
                         updateResizeHandlers();
                         updateBtDelete();
                         break;
@@ -208,6 +233,7 @@
                         updateSelection();
                         updateResizeHandlers(true);
                         updateBtDelete(true);
+                        updateAreaText();
                 }
             },
             startSelection  = function (event) {
@@ -428,7 +454,10 @@
                 cancelEvent(event);
                 $selection.remove();
                 $outline.remove();
-                $area.remove();
+                $areaElement.remove();
+                if(area.text){
+                  $textElement.remove();
+                }
                 $.each($resizeHandlers, function(card, $handler) {
                     $handler.remove();
                 });
@@ -469,19 +498,21 @@
             };
 
 
-
-        $area = $("<span id='area-"+ area.id +"' />")
+        // parent area which contain every thing about this area
+        $areaElement = $("<span id='area-"+ area.customId +"' />")
           .insertAfter($trigger);
 
         // Initialize an outline layer and place it above the trigger layer
+        // used for background gif animated borders
         $outline = $("<div class=\"select-areas-outline\" />")
             .css({
                 opacity : options.outlineOpacity,
                 position : "absolute"
             })
-            .appendTo($area);
+            .appendTo($areaElement);
 
         // Initialize a selection layer and place it above the outline layer
+        // used to show selected part from the original image
         $selection = $("<div />")
             .addClass("select-areas-background-area")
             .css({
@@ -490,6 +521,24 @@
                 position : "absolute"
             })
             .insertAfter($outline);
+
+
+        $textElement = $("<span />")
+          .text(area.text)
+          .addClass("area-text")
+          .css({
+            backgroundSize : $image.width() + "px " + $image.height() + "px",
+            position : "absolute",
+            "text-align": "center",
+            "text-overflow": "ellipsis",
+            display: "block",
+            "word-wrap": "break-word",
+            overflow: "hidden",
+            color: "red",
+            opacity: "1"
+          })
+          .insertAfter($outline);
+
 
         // Initialize all handlers
         if (options.allowResize) {
@@ -519,13 +568,16 @@
         }
 
         if (options.allowMove) {
-            $selection.mousedown(pickSelection).bind("touchstart", pickSelection);
+            //$selection.mousedown(pickSelection).bind("touchstart", pickSelection);
+            $areaElement.mousedown(pickSelection).bind("touchstart", pickSelection);
+
         }
 
         focus();
 
         return {
             getData: getData,
+            refresh: refresh,
             startSelection: startSelection,
             deleteSelection: deleteSelection,
             options: options,
@@ -703,6 +755,49 @@
         this.$trigger.css({
             cursor : this.options.allowSelect ? "crosshair" : "default"
         });
+    };
+
+    $.imageSelectAreas.prototype.renderArea = function(areaCustomId,areaData){
+      // check valid areaCustomId
+      if(!areaCustomId  || areaCustomId.length < 1 ){
+        console.error('Cannot renderArea, areaCustomId must be provided');
+        return ;
+      }
+      // check if there is area with areaCustomId
+      var _area = this.findAreaByAreaCustomId(areaCustomId);
+      if(!_area){
+        console.error('Cannot renderArea, no area found with this areaCustomId ');
+        return ;
+      }
+
+      // id data sent add it
+      if(areaData){
+        _area.set(areaData);
+      }
+      // refesh area
+      _area.refresh();
+
+    }
+
+    // find area by areaCustomId and return areaObject or return null
+    $.imageSelectAreas.prototype.findAreaByAreaCustomId = function(areaCustomId){
+      // check valid areaCustomId
+      if(!areaCustomId  || areaCustomId.length < 1 ){
+        console.error('Cannot findAreaByAreaCustomId, areaCustomId must be provided');
+        return ;
+      }
+
+      var areasCount = this.areas().length ;
+      for(var i = 0 ;  i < areasCount; ++i){
+        var areaObject = this._areas[i] ;
+        var areaData = areaObject.getData() ;
+        if(areaData.customId == areaCustomId){
+          return areaObject ;
+        }
+      }
+
+      // not found
+      return null
     };
 
     $.imageSelectAreas.prototype._eachArea = function (cb) {
