@@ -122,6 +122,10 @@ export class AppAreasComponent implements AfterViewInit{
 
 
   initSelectAreas() {
+
+    // scale each area to match the view
+    let scaledAreas = this.areas.map((area)=>(this.scaleAreaFromRealToView(area)));
+
     // set options
     let options:any = {
       minSize: [1, 1],    // Minimum size of a selection
