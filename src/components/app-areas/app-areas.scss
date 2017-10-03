@@ -35,8 +35,11 @@ app-areas {
   }
   .delete-area {
     position: absolute;
-    cursor: pointer;
     padding: 5px;
+  }
+
+  .area-text{
+    cursor: move
   }
 
 

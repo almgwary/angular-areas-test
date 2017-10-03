@@ -34,16 +34,25 @@ export class AppAreasComponent implements AfterViewInit{
     this.fetchAreas();
   }
 
+  changeAreaText(customId:any,areaData?:Area){
+    $(this.imageElement.nativeElement).selectAreas('renderArea',customId,{text:areaData.text})
+
+  }
   fetchAreas(){
     this.areas = [
       {
-        customId:55,
+        customId:"me1",
+        text:" this is me1 text ",
+        color:"red",
         x: 60,
         y: 60,
         width: 60,
         height: 60,
       },
       {
+        customId:"me2",
+        text:" this is me2 text ",
+        color:"red",
         x: 180,
         y: 60,
         width: 60,
@@ -52,6 +61,9 @@ export class AppAreasComponent implements AfterViewInit{
 
       ,
       {
+        customId:"me3",
+        text:" this is me3 text ",
+        color:"red",
         x: 60,
         y: 180,
         width: 60,
@@ -59,10 +71,13 @@ export class AppAreasComponent implements AfterViewInit{
       }
       ,
       {
+        customId:"me4",
+        text:" this is me3 text ",
+        color:"red",
         x: 180,
         y: 180,
         width: 60,
-        height: 60,
+        height: 300,
       }
     ]
   }
@@ -236,7 +251,9 @@ export class AppAreasComponent implements AfterViewInit{
 
 
 interface Area {
-  customId?:number;
+  customId?:string;
+  text?:string;
+  color?:string;
   x:number ;
   y:number ;
   width:number ;

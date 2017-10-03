@@ -8,7 +8,7 @@
     <div class="image-decorator">
       <img alt="Image principale" #imageElement src="./assets/7337760.png" (load)="onImageLoaded($event)"/>
     </div>
-    <table>
+    <table style="display: none">
       <tr>
         <td class="actions">
           <input type="button" (click)="onBtnViewClick()" id="btnView" value="Display sections" class="actionOn" />
@@ -25,6 +25,17 @@
       </tr>
     </table>
 
+  </div>
+
+  <div>
+    input
+    <div  *ngFor="let area of areas">
+      <label color="primary">{{area.customId}}</label>
+      <input
+        [(ngModel)]="area.text"
+        (keyup)="changeAreaText(area.customId, area)"
+        (change)='changeAreaText(area.customId, area)'>
+    </div>
   </div>
 
 </div>
