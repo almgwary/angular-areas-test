@@ -132,14 +132,7 @@ export class AppAreasComponent implements AfterViewInit{
       maxSize: [400, 300],  // Maximum size of a selection
       onChanging: $.noop ,   // fired during the modification of a selection
       onChanged: this.debugQtyAreas,
-      areas: [
-        {
-          x: 60,
-          y: 60,
-          width: 60,
-          height: 60,
-        }
-      ]
+      areas: scaledAreas
     };
 
     // set imageNaturalWidth if exist
