@@ -25,10 +25,44 @@ export class AppAreasComponent implements AfterViewInit{
   imageViewedWidth:number = 0 ;
   imageViewedHeight:number = 0 ;
 
+  areas:Array<Area> = [] ;
+
   constructor() {
     console.log('Hello AppAreasComponent Component');
+    this.fetchAreas();
   }
 
+  fetchAreas(){
+    this.areas = [
+      {
+        x: 60,
+        y: 60,
+        width: 60,
+        height: 60,
+      },
+      {
+        x: 180,
+        y: 60,
+        width: 60,
+        height: 60,
+      }
+
+      ,
+      {
+        x: 60,
+        y: 180,
+        width: 60,
+        height: 60,
+      }
+      ,
+      {
+        x: 180,
+        y: 180,
+        width: 60,
+        height: 60,
+      }
+    ]
+  }
   ngAfterViewInit(){
   }
 
