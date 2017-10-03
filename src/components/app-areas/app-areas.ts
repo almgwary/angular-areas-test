@@ -3,7 +3,7 @@ import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import * as $ from 'jquery';
 
 //This will inject a jQuery variable to your imported module
-import  "imports-loader?jQuery=jquery!../../assets/scripts/jquery.selectareas.js"
+import  "imports-loader?jQuery=jquery!./jquery.selectareas.js"
 
 /**
  * Generated class for the AppAreasComponent component.
@@ -37,6 +37,7 @@ export class AppAreasComponent implements AfterViewInit{
   fetchAreas(){
     this.areas = [
       {
+        customId:55,
         x: 60,
         y: 60,
         width: 60,
@@ -235,6 +236,7 @@ export class AppAreasComponent implements AfterViewInit{
 
 
 interface Area {
+  customId?:number;
   x:number ;
   y:number ;
   width:number ;

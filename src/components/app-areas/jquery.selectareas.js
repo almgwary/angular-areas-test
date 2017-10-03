@@ -5,10 +5,14 @@
  * @author Adrien David-Sivelle (https://github.com/AdrienDS - Refactoring, Multiselections & Mobile compatibility)
  */
 (function($) {
+
+  console.log('selectAreas init');
+
     $.imageArea = function(parent, id) {
         var options = parent.options,
             $image = parent.$image,
             $trigger = parent.$trigger,
+            $area,
             $outline,
             $selection,
             $resizeHandlers = {},
@@ -26,10 +30,12 @@
                 width: 0
             },
             blur = function () {
+                console.log('area.blur', area.id);
                 area.z = 0;
                 refresh("blur");
             },
             focus = function () {
+                console.log('area.focus', area.id);
                 parent.blurAll();
                 area.z = 100;
                 refresh();
@@ -418,9 +424,11 @@
                 refresh("releaseSelection");
             },
             deleteSelection = function (event) {
+                console.log('area.deleteselection',area.id);
                 cancelEvent(event);
                 $selection.remove();
                 $outline.remove();
+                $area.remove();
                 $.each($resizeHandlers, function(card, $handler) {
                     $handler.remove();
                 });
@@ -461,13 +469,17 @@
             };
 
 
+
+        $area = $("<span id='area-"+ area.id +"' />")
+          .insertAfter($trigger);
+
         // Initialize an outline layer and place it above the trigger layer
         $outline = $("<div class=\"select-areas-outline\" />")
             .css({
                 opacity : options.outlineOpacity,
                 position : "absolute"
             })
-            .insertAfter($trigger);
+            .appendTo($area);
 
         // Initialize a selection layer and place it above the outline layer
         $selection = $("<div />")
@@ -628,7 +640,7 @@
             .insertAfter(this.$image);
 
         // Initialize a trigger layer and place it above the overlay layer
-        this.$trigger = $("<div />")
+        this.$trigger = $("<div class='parent-trigger-layer'/>")
             .css({
                 backgroundColor : "#000000",
                 opacity : 0,
@@ -712,6 +724,12 @@
         }
     };
 
+  /**
+   * create id = last id + 1
+   * blur all areas
+   * @param event
+   * @returns {number}
+   */
     $.imageSelectAreas.prototype.newArea = function (event) {
         var id = -1;
         this.blurAll();
@@ -731,6 +749,7 @@
     };
 
     $.imageSelectAreas.prototype.set = function (id, options, silent) {
+        console.log('areas set area',id);
         if (this._areas[id]) {
             options.id = id;
             this._areas[id].set(options, silent);
@@ -739,6 +758,7 @@
     };
 
     $.imageSelectAreas.prototype._add = function (options, silent) {
+        // get id in sequence
         var id = this.newArea();
         this.set(id, options, silent);
     };
@@ -821,7 +841,8 @@
     };
 
     $.selectAreas = function(object, options) {
-        var $object = $(object);
+      console.log('$.selectAreas',object, options);
+      var $object = $(object);
         if (! $object.data("mainImageSelectAreas")) {
             var mainImageSelectAreas = new $.imageSelectAreas();
             mainImageSelectAreas.init(object, options);
@@ -833,6 +854,7 @@
 
 
     $.fn.selectAreas = function(customOptions) {
+        console.log('$.fn.selectAreas',customOptions);
         if ( $.imageSelectAreas.prototype[customOptions] ) { // Method call
             var ret = $.imageSelectAreas.prototype[ customOptions ].apply( $.selectAreas(this), Array.prototype.slice.call( arguments, 1 ));
             return typeof ret === "undefined" ? this : ret;
@@ -858,4 +880,5 @@
             $.error( "Method " +  customOptions + " does not exist on jQuery.selectAreas" );
         }
     };
+
 }) (jQuery);
