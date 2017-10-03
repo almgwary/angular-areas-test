@@ -166,3 +166,11 @@ export class AppAreasComponent implements AfterViewInit{
 
 
 }
+
+
+interface Area {
+  x:number ;
+  y:number ;
+  width:number ;
+  height:number ;
+}
