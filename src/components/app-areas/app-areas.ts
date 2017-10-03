@@ -90,6 +90,36 @@ export class AppAreasComponent implements AfterViewInit{
 
   }
 
+  /**
+   * scale area from  original size to current view size
+   * current view size = this.imageViewedHeight * this.imageViewedWidth
+   * real size = this.imageNaturalHeight * this.imageNaturalWidth
+   * this function doesn't edit it'st input
+   * @param area : Area
+   */
+  scaleAreaFromRealToView(area:Area):Area{
+
+    if(! this.isImageLoaded ){
+      console.error('image should be loaded first, before calculating the scale .');
+      return ;
+    }
+    // clone area
+    let newArea = Object.assign({},area);
+    // get width scale
+    let widthScale =  this.imageViewedWidth / this.imageNaturalWidth ;
+    // get height scale
+    let heightScale =  this.imageViewedHeight / this.imageNaturalHeight ;
+
+    // calculate scale
+    newArea.height = newArea.height * heightScale ;
+    newArea.width = newArea.width * widthScale ;
+    newArea.y = newArea.y * heightScale ;
+    newArea.x = newArea.x * widthScale ;
+
+    return newArea  ;
+
+  }
+
 
   initSelectAreas() {
     // set options
