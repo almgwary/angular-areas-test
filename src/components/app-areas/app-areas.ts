@@ -25,6 +25,8 @@ export class AppAreasComponent implements AfterViewInit{
   imageViewedWidth:number = 0 ;
   imageViewedHeight:number = 0 ;
 
+  isImageLoaded:boolean =  false ;
+
   areas:Array<Area> = [] ;
 
   constructor() {
@@ -69,6 +71,9 @@ export class AppAreasComponent implements AfterViewInit{
 
   onImageLoaded($event){
     console.log('onImageLoaded');
+
+    this.isImageLoaded = true;
+
     // set  real image width and height
     this.imageNaturalWidth = this.imageElement.nativeElement.naturalWidth;
     this.imageNaturalHeight = this.imageElement.nativeElement.naturalHeight ;
