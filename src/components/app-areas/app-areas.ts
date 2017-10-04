@@ -153,6 +153,11 @@ export class AppAreasComponent implements AfterViewInit{
 
     // set options
     let options:any = {
+      allowEdit: true,
+      allowMove: true,
+      allowResize: true,
+      allowSelect: true,
+      allowDelete: true,
       minSize: [1, 1],    // Minimum size of a selection
       maxSize: [5000, 5000],  // Maximum size of a selection
       onChanging: $.noop ,   // fired during the modification of a selection
