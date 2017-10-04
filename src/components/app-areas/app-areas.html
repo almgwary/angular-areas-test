@@ -35,6 +35,7 @@
         [(ngModel)]="area.text"
         (keyup)="changeAreaText(area.customId, area)"
         (change)='changeAreaText(area.customId, area)'>
+      <button (click)="focusAreaByCustomId(area.customId)">active</button>
     </div>
   </div>
 

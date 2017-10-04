@@ -172,7 +172,10 @@ export class AppAreasComponent implements AfterViewInit{
     console.log('selectAreas init finished');
   }
 
+  focusAreaByCustomId(customId?:any){
+    $(this.imageElement.nativeElement).selectAreas('focusAreaByCustomId', customId);
 
+  }
 
 
 

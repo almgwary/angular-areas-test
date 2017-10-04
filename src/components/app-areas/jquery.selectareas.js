@@ -769,27 +769,45 @@
         });
     };
 
-    $.imageSelectAreas.prototype.renderArea = function(areaCustomId,areaData){
-      // check valid areaCustomId
-      if(!areaCustomId  || areaCustomId.length < 1 ){
-        console.error('Cannot renderArea, areaCustomId must be provided');
-        return ;
-      }
-      // check if there is area with areaCustomId
-      var _area = this.findAreaByAreaCustomId(areaCustomId);
-      if(!_area){
-        console.error('Cannot renderArea, no area found with this areaCustomId ');
-        return ;
-      }
-
-      // id data sent add it
-      if(areaData){
-        _area.set(areaData);
-      }
-      // refesh area
-      _area.refresh();
-
+  $.imageSelectAreas.prototype.focusAreaByCustomId = function(areaCustomId){
+    // check valid areaCustomId
+    if(!areaCustomId  || areaCustomId.length < 1 ){
+      console.error('Cannot renderArea, areaCustomId must be provided');
+      return ;
     }
+    // check if there is area with areaCustomId
+    var _area = this.findAreaByAreaCustomId(areaCustomId);
+    if(!_area){
+      console.error('Cannot renderArea, no area found with this areaCustomId ');
+      return ;
+    }
+
+     _area.focus();
+
+  }
+
+
+  $.imageSelectAreas.prototype.renderArea = function(areaCustomId,areaData){
+    // check valid areaCustomId
+    if(!areaCustomId  || areaCustomId.length < 1 ){
+      console.error('Cannot renderArea, areaCustomId must be provided');
+      return ;
+    }
+    // check if there is area with areaCustomId
+    var _area = this.findAreaByAreaCustomId(areaCustomId);
+    if(!_area){
+      console.error('Cannot renderArea, no area found with this areaCustomId ');
+      return ;
+    }
+
+    // id data sent add it
+    if(areaData){
+      _area.set(areaData);
+    }
+    // refesh area
+    _area.refresh();
+
+  }
 
     // find area by areaCustomId and return areaObject or return null
     $.imageSelectAreas.prototype.findAreaByAreaCustomId = function(areaCustomId){
