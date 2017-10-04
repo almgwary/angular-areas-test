@@ -3,6 +3,7 @@
  * @author 360Learning
  * @author Catalin Dogaru (https://github.com/cdog - http://code.tutsplus.com/tutorials/how-to-create-a-jquery-image-cropping-plugin-from-scratch-part-i--net-20994)
  * @author Adrien David-Sivelle (https://github.com/AdrienDS - Refactoring, Multiselections & Mobile compatibility)
+ * @author Amr Almgwary (https://github.com/almgwary - RelativeRatio fix, focus from outside & add text to area & add blur and focus color)
  */
 (function($) {
 
