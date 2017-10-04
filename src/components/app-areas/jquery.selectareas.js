@@ -41,13 +41,25 @@
             blur = function () {
                 console.log('area.blur', area.id);
                 area.z = 0;
+                // remove active class to this area
+                $areaElement.removeClass('active');
                 refresh("blur");
+                // call back function for onAreaBlur
+                parent.options.onAreaFocus(area);
+
             },
             focus = function () {
                 console.log('area.focus', area.id);
-                parent.blurAll();
+                // parent.blurAll();
+                parent.blurOthers(area.id);
+                // add active class to this area
+                $areaElement.addClass('active');
+
                 area.z = 100;
                 refresh();
+                // call back function for onAreaFocus
+                parent.options.onAreaFocus(area);
+
             },
             getData = function () {
                 return area;
@@ -104,12 +116,12 @@
 
                 // Update the selection layer
                 $selection.css({
-                    backgroundPosition : ( - area.x - 1) + "px " + ( - area.y - 1) + "px",
+                    backgroundPosition : ( - area.x - 2) + "px " + ( - area.y - 2) + "px",
                     cursor : options.allowMove ? "move" : "default",
-                    width: (area.width - 2 > 0) ? (area.width - 2) : 0,
-                    height: (area.height - 2 > 0) ? (area.height - 2) : 0,
-                    left : area.x + 1,
-                    top : area.y + 1,
+                    width: (area.width - 4 > 0) ? (area.width - 4) : 0,
+                    height: (area.height - 4 > 0) ? (area.height - 4) : 0,
+                    left : area.x + 2,
+                    top : area.y + 2,
                     "z-index": area.z + 2
                 });
             },
@@ -528,14 +540,6 @@
           .addClass("area-text")
           .css({
             backgroundSize : $image.width() + "px " + $image.height() + "px",
-            position : "absolute",
-            "text-align": "center",
-            "text-overflow": "ellipsis",
-            display: "block",
-            "word-wrap": "break-word",
-            overflow: "hidden",
-            color: "red",
-            opacity: "1"
           })
           .insertAfter($outline);
 
@@ -633,9 +637,11 @@
                 maxSize: [0, 0],
                 width: 0,
                 maxAreas: 0,
-                outlineOpacity: 0.5,
-                overlayOpacity: 0.5,
+                outlineOpacity: 1,
+                overlayOpacity: 0.3,
                 areas: [],
+                onAreaFocus: null,
+                onAreaBlur: null,
                 onChanging: null,
                 onChanged: null
             };
@@ -657,6 +663,12 @@
             this.$image.width(this.options.width);
         }
 
+        if (this.options.onAreaFocus) {
+            this.$image.on("onAreaFocus", this.options.onAreaFocus);
+        }
+        if (this.options.onAreaBlur) {
+            this.$image.on("onAreaBlur", this.options.onAreaBlur);
+        }
         if (this.options.onChanging) {
             this.$image.on("changing", this.options.onChanging);
         }
@@ -918,11 +930,19 @@
         return ret;
     };
 
-    $.imageSelectAreas.prototype.blurAll = function () {
-        this._eachArea(function (area) {
-            area.blur();
-        });
-    };
+  $.imageSelectAreas.prototype.blurAll = function () {
+    this._eachArea(function (area) {
+      area.blur();
+    });
+  };
+
+  $.imageSelectAreas.prototype.blurOthers = function (areaId) {
+    this._eachArea(function (area) {
+      if(area.getData().id != areaId){
+        area.blur();
+      }
+    });
+  };
 
     $.imageSelectAreas.prototype.contains  = function (point) {
         var res = false;

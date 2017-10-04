@@ -136,6 +136,15 @@ export class AppAreasComponent implements AfterViewInit{
 
   }
 
+  onAreaBlur(area?:any){
+     console.log('onAreaBlur customId:',area.customId);
+  }
+
+
+  onAreaFocus(area?:any){
+    console.log('onAreaFocus customId:',area.customId);
+  }
+
 
   initSelectAreas() {
 
@@ -145,8 +154,10 @@ export class AppAreasComponent implements AfterViewInit{
     // set options
     let options:any = {
       minSize: [1, 1],    // Minimum size of a selection
-      maxSize: [400, 300],  // Maximum size of a selection
+      maxSize: [5000, 5000],  // Maximum size of a selection
       onChanging: $.noop ,   // fired during the modification of a selection
+      onAreaBlur: this.onAreaBlur ,   // fired when area blured
+      onAreaFocus: this.onAreaFocus ,   // fired when area focused
       onChanged: this.debugQtyAreas,
       areas: scaledAreas
     };
