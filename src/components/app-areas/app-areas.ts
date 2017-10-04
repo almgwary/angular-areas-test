@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
 
 import * as $ from 'jquery';
 
@@ -18,6 +18,11 @@ import  "imports-loader?jQuery=jquery!./jquery.selectareas.js"
 export class AppAreasComponent implements AfterViewInit{
 
   @ViewChild('imageElement')imageElement:ElementRef ;
+  @Input('options')options:AppAreaOptions ;
+  @Input('img-src')imgSrc:string ;
+  // @Output() myEvent = new EventEmitter();
+
+
   // real image width and height, this value set after onImageLoaded
   imageNaturalWidth:number = 500 ;
   imageNaturalHeight:number = 0 ;
@@ -27,60 +32,17 @@ export class AppAreasComponent implements AfterViewInit{
 
   isImageLoaded:boolean =  false ;
 
-  areas:Array<Area> = [] ;
 
   constructor() {
-    console.log('Hello AppAreasComponent Component');
-    this.fetchAreas();
   }
 
-  changeAreaText(customId:any,areaData?:Area){
-    $(this.imageElement.nativeElement).selectAreas('renderArea',customId,{text:areaData.text})
-
+  ngOnInit() {
+    if(!this.options) throw new Error("Attribute 'options' is required");
+    else if(!this.imgSrc) throw new Error("Attribute 'img-src' is required");
+    else if(this.imgSrc.length < 1) throw new Error("Attribute 'img-src' must not be empty");
   }
-  fetchAreas(){
-    this.areas = [
-      {
-        customId:"me1",
-        text:" this is me1 text ",
-        color:"red",
-        x: 60,
-        y: 60,
-        width: 60,
-        height: 60,
-      },
-      {
-        customId:"me2",
-        text:" this is me2 text ",
-        color:"red",
-        x: 180,
-        y: 60,
-        width: 60,
-        height: 60,
-      }
 
-      ,
-      {
-        customId:"me3",
-        text:" this is me3 text ",
-        color:"red",
-        x: 60,
-        y: 180,
-        width: 60,
-        height: 60,
-      }
-      ,
-      {
-        customId:"me4",
-        text:" this is me3 text ",
-        color:"red",
-        x: 180,
-        y: 180,
-        width: 60,
-        height: 300,
-      }
-    ]
-  }
+
   ngAfterViewInit(){
   }
 
@@ -136,34 +98,42 @@ export class AppAreasComponent implements AfterViewInit{
 
   }
 
-  onAreaBlur(area?:any){
+  onAreaBlur(area?:Area){
      console.log('onAreaBlur customId:',area.customId);
   }
 
 
-  onAreaFocus(area?:any){
+  onAreaFocus(area?:Area){
     console.log('onAreaFocus customId:',area.customId);
   }
+
+  // Log the quantity of selections
+  onAreasChanged(event,id, areas) {
+    console.log(areas.length + " areas", arguments);
+  };
+
+
 
 
   initSelectAreas() {
 
     // scale each area to match the view
-    let scaledAreas = this.areas.map((area)=>(this.scaleAreaFromRealToView(area)));
+    let scaledAreas = this.options.areas.map((area)=>(this.scaleAreaFromRealToView(area)));
 
     // set options
-    let options:any = {
-      allowEdit: true,
-      allowMove: true,
-      allowResize: true,
-      allowSelect: true,
-      allowDelete: true,
-      minSize: [1, 1],    // Minimum size of a selection
-      maxSize: [5000, 5000],  // Maximum size of a selection
-      onChanging: $.noop ,   // fired during the modification of a selection
-      onAreaBlur: this.onAreaBlur ,   // fired when area blured
-      onAreaFocus: this.onAreaFocus ,   // fired when area focused
-      onChanged: this.debugQtyAreas,
+    let options:AppAreaOptions = {
+      allowEdit: this.options.allowEdit ||  true,
+      allowMove: this.options.allowMove ||  true,
+      allowResize: this.options.allowResize ||  true,
+      allowSelect: this.options.allowSelect ||  true,
+      allowDelete: this.options.allowDelete ||  true,
+      minSize: this.options.minSize ||  [1, 1],    // Minimum size of a selection
+      maxSize: this.options.maxSize ||  [5000, 5000],  // Maximum size of a selection
+      onChanging: this.options.onChanging ||  $.noop ,   // fired during the modification of a selection
+      onAreaBlur: this.options.onAreaBlur ||  this.onAreaBlur ,   // fired when area blured
+      onAreaFocus: this.options.onAreaFocus ||  this.onAreaFocus ,   // fired when area focused
+      onChanged: this.options.onChanged ||  this.onAreasChanged,
+      width: this.options.width ||  null,
       areas: scaledAreas
     };
 
@@ -174,44 +144,43 @@ export class AppAreasComponent implements AfterViewInit{
 
     // init select areas
     $(this.imageElement.nativeElement).selectAreas(options);
-    console.log('selectAreas init finished');
+    console.log('selectAreas init finished', options);
   }
 
   focusAreaByCustomId(customId?:any){
     $(this.imageElement.nativeElement).selectAreas('focusAreaByCustomId', customId);
 
   }
+  changeAreaText(customId:any,areaData?:Area){
+    $(this.imageElement.nativeElement).selectAreas('renderArea',customId,{text:areaData.text})
+
+  }
 
 
 
 
-  onBtnViewClick() {
+  getAreas():any {
     let areas = $(this.imageElement.nativeElement).selectAreas('areas');
-    this.displayAreas(areas);
+    return areas  ;
   }
-  onBtnViewRelativeClick() {
+  getAreasRelative():any {
     let areas = $(this.imageElement.nativeElement).selectAreas('relativeAreas');
-    this.displayAreas(areas);
+    return areas  ;
+
   }
-  onBtnResetClick () {
-    this.output("reset")
+  reset () {
     $(this.imageElement.nativeElement).selectAreas('reset');
   }
-  onBtnDestroyClick () {
+  destroy () {
     $(this.imageElement.nativeElement).selectAreas('destroy');
-
-    this.output("destroyed")
-    $('.actionOn').attr("disabled", "disabled");
-    $('.actionOff').removeAttr("disabled")
   }
   onBtnCreateClick() {
     $(this.imageElement.nativeElement).selectAreas({
       minSize: [10, 10],
-      onChanged : this.debugQtyAreas,
+      onChanged : this.onAreasChanged,
       width: 500,
     });
 
-    this.output("created")
     $('.actionOff').attr("disabled", "disabled");
     $('.actionOn').removeAttr("disabled")
   }
@@ -222,9 +191,9 @@ export class AppAreasComponent implements AfterViewInit{
         width: Math.floor((Math.random() * 100)) + 50,
         height: Math.floor((Math.random() * 100)) + 20,
       };
-      this.output("Add a new area: " + this.areaToString(areaOptions))
       $(this.imageElement.nativeElement).selectAreas('add', areaOptions);
-    }
+  }
+
   onBtnNewsClick() {
       let areaOption1 = {
         x: Math.floor((Math.random() * 200)),
@@ -237,31 +206,15 @@ export class AppAreasComponent implements AfterViewInit{
         width: 50,
         height: 20,
       };
-      this.output("Add a new area: " + this.areaToString(areaOption1) + " and " + this.areaToString(areaOption2))
       $(this.imageElement.nativeElement).selectAreas('add', [areaOption1, areaOption2]);
     }
 
-  areaToString(area){
-      return (typeof area.id === "undefined" ? "" : (area.id + ": ")) + area.x + ':' + area.y  + ' ' + area.width + 'x' + area.height + '<br />'
-    }
 
-  output(text){
-      $('#output').html(text);
+
+  ngOnDestroy(){
+    this.destroy()
   }
 
-  // Log the quantity of selections
-  debugQtyAreas(event,id, areas) {
-    console.log(areas.length + " areas", arguments);
-  };
-
-  // Display areas coordinates in a div
-  displayAreas(areas){
-    let text = "";
-    $.each(areas,  (id, area) => {
-      text += this.areaToString(area);
-    });
-    this.output(text);
-  };
 
 
 
@@ -269,7 +222,7 @@ export class AppAreasComponent implements AfterViewInit{
 }
 
 
-interface Area {
+export interface Area {
   customId?:string;
   text?:string;
   color?:string;
@@ -277,4 +230,22 @@ interface Area {
   y:number ;
   width:number ;
   height:number ;
+  isFocused?:boolean ;
+}
+
+// set options
+export interface AppAreaOptions {
+  allowEdit?: boolean,
+  allowMove?: boolean,
+  allowResize?: boolean,
+  allowSelect?: boolean,
+  allowDelete?: boolean,
+  width?: number, // the  view width,  used to calculate the real size
+  minSize?: [number, number],    // Minimum size of a selection
+  maxSize?: [number, number],  // Maximum size of a selection
+  onChanging?: any ,   // fired during the modification of a selection
+  onAreaBlur?: any ,   // fired when area blurred
+  onAreaFocus?: any ,   // fired when area focused
+  onChanged?: any,
+  areas?: Area[]
 }

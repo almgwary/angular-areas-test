@@ -39,17 +39,17 @@
                 width: 0
             },
             blur = function () {
-                console.log('area.blur', area.id);
+                // console.log('area.blur', area.id);
                 area.z = 0;
                 // remove active class to this area
                 $areaElement.removeClass('active');
                 refresh("blur");
                 // call back function for onAreaBlur
-                parent.options.onAreaFocus(area);
+                parent.options.onAreaBlur(area);
 
             },
             focus = function () {
-                console.log('area.focus', area.id);
+                // console.log('area.focus', area.id);
                 // parent.blurAll();
                 parent.blurOthers(area.id);
                 // add active class to this area

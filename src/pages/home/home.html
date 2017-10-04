@@ -8,7 +8,35 @@
 </ion-header>
 
 <ion-content padding>
-  <h3>Ionic Menu Starter</h3>
+  <button ion-button (click)="getAreasRelativeSize()"> log areas </button>
 
- <app-areas></app-areas>
+
+  <app-areas
+   [options]="options"
+   [img-src]="imgSrc"></app-areas>
+
+
+
+
+  <div>
+
+    <div  *ngFor="let area of areas">
+
+      <ion-item>
+        <ion-label fixed>{{area.customId}}</ion-label>
+        <ion-input
+          [(ngModel)]="area.text"
+          (keyup)="changeAreaText(area.customId, area)"
+          (change)='changeAreaText(area.customId, area)'></ion-input>
+      </ion-item>
+      <button ion-button
+              (click)="focusAreaByCustomId(area.customId)"
+              color="{{ area.isFocused ?  'danger' : 'secondary'}}">
+        {{area.text}} -   {{ area.isFocused }} - </button>
+
+    </div>
+  </div>
+
+
+
 </ion-content>
