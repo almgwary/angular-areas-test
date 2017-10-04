@@ -122,17 +122,28 @@ export class AppAreasComponent implements AfterViewInit{
 
     // set options
     let options:AppAreaOptions = {
-      allowEdit: this.options.allowEdit ||  true,
-      allowMove: this.options.allowMove ||  true,
-      allowResize: this.options.allowResize ||  true,
-      allowSelect: this.options.allowSelect ||  true,
-      allowDelete: this.options.allowDelete ||  true,
+      allowEdit: this.options.allowEdit  == false ?  this.options.allowEdit  : true,
+      allowMove: this.options.allowMove  == false ?  this.options.allowMove  : true,
+      allowResize: this.options.allowResize  == false ?  this.options.allowResize  : true,
+      allowSelect: this.options.allowSelect  == false ?  this.options.allowSelect  : true,
+      allowDelete: this.options.allowDelete  == false ?  this.options.allowDelete  : true,
       minSize: this.options.minSize ||  [1, 1],    // Minimum size of a selection
       maxSize: this.options.maxSize ||  [5000, 5000],  // Maximum size of a selection
-      onChanging: this.options.onChanging ||  $.noop ,   // fired during the modification of a selection
-      onAreaBlur: this.options.onAreaBlur ||  this.onAreaBlur ,   // fired when area blured
-      onAreaFocus: this.options.onAreaFocus ||  this.onAreaFocus ,   // fired when area focused
-      onChanged: this.options.onChanged ||  this.onAreasChanged,
+      // fired during the modification of a selection
+      onChanging: (data)=>{
+        this.options.onChanging? this.options.onChanging(data)  :  $.noop
+        }  ,
+      // fired when area blured
+      onAreaBlur: (area?:Area)=>{
+        this.options.onAreaBlur? this.options.onAreaBlur(area)  : this.onAreaBlur(area)
+      }  ,
+      // fired when area focused
+      onAreaFocus: (area?:Area)=>{
+        this.options.onAreaFocus? this.options.onAreaFocus(area)  : this.onAreaFocus(area)
+      }  ,
+      onChanged: (event,id, areas)=>{
+        this.options.onChanged? this.options.onChanged(event,id, areas)  : this.onAreasChanged(event,id, areas)
+      }  ,
       width: this.options.width ||  null,
       areas: scaledAreas
     };

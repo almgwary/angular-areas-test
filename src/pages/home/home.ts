@@ -26,13 +26,13 @@ export class HomePage {
       allowEdit:  true,
       allowMove:  true,
       allowResize:  true,
-      allowSelect:  true,
-      allowDelete:  true,
+      allowSelect:  false,
+      allowDelete:  false,
       minSize:  [1, 1],    // Minimum size of a selection
       maxSize:  [5000, 5000],  // Maximum size of a selection
-      onAreaBlur:  this.onAreaBlur.bind(this) ,   // fired when area blured
-      onAreaFocus:  this.onAreaFocus.bind(this) ,   // fired when area focused
-      onChanged:  this.onAreasChanged.bind(this),
+      onAreaBlur:  this.onAreaBlur ,   // fired when area blured
+      onAreaFocus:  this.onAreaFocus ,   // fired when area focused
+      onChanged:  this.onAreasChanged,
       width:  null,
       areas: this.areas
     };

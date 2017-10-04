@@ -723,9 +723,14 @@
         this._refresh();
 
         if (this.options.allowSelect) {
-            // Bind an event handler to the "mousedown" event of the trigger layer
+          console.log('allow select');
+
+          // Bind an event handler to the "mousedown" event of the trigger layer
             this.$trigger.mousedown($.proxy(this.newArea, this)).on("touchstart", $.proxy(this.newArea, this));
+        }else{
+            console.log('not allow select');
         }
+
         if (this.options.allowNudge) {
             $('html').keydown(function (e) { // move selection with arrow keys
                 var codes = {
